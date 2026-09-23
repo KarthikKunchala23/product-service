@@ -89,12 +89,29 @@ jobs:
             #         -t product-service:${{ inputs.image_tag }} \
             #         .
 
-            - name: Build, tag, and push docker image to Amazon ECR
+            - name: Build and tag Image
               env:
                 REGISTRY: ${{ steps.login-ecr.outputs.registry }}
                 REPOSITORY: product-service
                 IMAGE_TAG: ${{ inputs.image_tag }}
               run: |
                 docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+            
+            - name: Run Trivy vulnerability scanner
+              uses: aquasecurity/trivy-action@v0.36.0
+              with:
+                image-ref: 'docker.io/$REGISTRY/$REPOSITORY:$IMAGE_TAG'
+                format: table
+                exit-code: 1
+                ignore-unfixed: true
+                vuln-type: 'os,library'
+                severity: 'CRITICAL,HIGH'
+
+            - name: Push Docker Image to ECR
+              env:
+                REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                REPOSITORY: product-service
+                IMAGE_TAG: ${{ inputs.image_tag }}
+              run: |
                 docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
               
