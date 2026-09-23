@@ -56,10 +56,10 @@ jobs:
                 java-version: '21'
                 cache: maven
 
-            - name: Set up Maven
-              uses: stCarolas/setup-maven@v5
-              with:
-                maven-version: 3.9.16
+            # - name: Set up Maven
+            #   uses: stCarolas/setup-maven@v5
+            #   with:
+            #     maven-version: 3.9.16
 
             - name: Check versions
               run: |
@@ -71,7 +71,7 @@ jobs:
                 SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/productdb
                 SPRING_DATASOURCE_USERNAME: postgres
                 SPRING_DATASOURCE_PASSWORD: postgres
-              run: mvn clean verify --batch-mode
+              run: ./mvnw clean verify --batch-mode
 
             - name: Upload test reports
               if: failure()
@@ -81,7 +81,7 @@ jobs:
                 path: '**/target/surefire-reports/'
 
             - name: Build the application
-              run: mvn clean package -DskipTests --batch-mode
+              run: ./mvnw clean package -DskipTests --batch-mode
 
             # - name: Build docker image
             #   run: |
