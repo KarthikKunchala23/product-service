@@ -102,10 +102,18 @@ jobs:
               with:
                 image-ref: '${{ steps.login-ecr.outputs.registry }}/product-service:${{ inputs.image_tag }}'
                 format: table
+                output: trivy-report.txt
                 exit-code: 1
                 ignore-unfixed: true
                 vuln-type: 'os,library'
                 severity: 'CRITICAL,HIGH'
+
+            - name: Upload trivy vulnerability reports
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                name: trivy-vulnerability-report
+                path: trivy-report.txt
 
             - name: Push Docker Image to ECR
               env:
