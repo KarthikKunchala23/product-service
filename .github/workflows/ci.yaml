@@ -1,0 +1,76 @@
+---
+name: Product Service CI
+
+on:
+    workflow_dispatch:
+        inputs:
+            image_tag:
+                description: "Docker image tag"
+                default: "1.0"
+                required: true
+                type: string
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                role-to-assume: arn:aws:iam::897722700244:role/gp-terraform-execution
+                aws-region: ap-south-1
+
+            - name: Login to Amazon ECR
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v2
+
+
+            - name: Setup java
+              uses: actions/setup-java@v6
+              with:
+                distribution: temurin
+                java-version: '21'
+                cache: maven
+
+            - name: Set up Maven
+              uses: stCarolas/setup-maven@v5
+              with:
+                maven-version: 3.9.16
+
+            - name: Check versions
+              run: |
+                java -version
+                mvn -version
+            
+            - name: Run tests
+              run: mvn clean test --batch-mode
+
+            - name: Upload test reports
+              if: failure()
+              uses: actions/upload-artifact@v4
+              with:
+                name: surefire-reports
+                path: '**/target/surefire-reports/'
+
+            - name: Build the application
+              run: mvn clean package -DskipTests
+
+            # - name: Build docker image
+            #   run: |
+            #     docker build \
+            #         -t product-service:${{ inputs.image_tag }} \
+            #         .
+
+            - name: Build, tag, and push docker image to Amazon ECR
+              env:
+                REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                REPOSITORY: product-service
+                IMAGE_TAG: ${{ inputs.image_tag }}
+              run: |
+                docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+                docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+              
