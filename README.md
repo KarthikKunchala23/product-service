@@ -522,7 +522,7 @@ mvn spring-boot:run
 ```
 
 
-# 2. Application Overview
+# 3. Application Overview
 
 The application is a **Product Catalog API**.
 
@@ -554,7 +554,7 @@ Technology stack:
 
 ---
 
-# 3. High-Level Architecture
+# 4. High-Level Architecture
 
 The application follows a standard layered Spring Boot architecture.
 
@@ -630,7 +630,7 @@ Amazon EKS
 
 ---
 
-# 4. Repository Structure
+# 5. Repository Structure
 
 The current Java application follows a standard Maven project structure.
 
@@ -683,7 +683,7 @@ product-service/
 
 ---
 
-# 5. Java Application Design
+# 6. Java Application Design
 
 The application uses a layered architecture.
 
@@ -709,7 +709,7 @@ It should not contain database logic.
 
 ---
 
-# 6. Service Layer
+# 7. Service Layer
 
 The service layer contains application/business logic.
 
@@ -734,7 +734,7 @@ This makes the application easier to:
 
 ---
 
-# 7. Repository Layer
+# 8. Repository Layer
 
 The repository layer uses Spring Data JPA.
 
@@ -755,7 +755,7 @@ The repository is responsible for persistence operations.
 
 ---
 
-# 8. Database
+# 9. Database
 
 The application uses PostgreSQL.
 
@@ -786,7 +786,7 @@ This allows the same application image to be used in different environments with
 
 ---
 
-# 9. Configuration Strategy
+# 10. Configuration Strategy
 
 The application follows environment-variable-based configuration.
 
@@ -823,7 +823,7 @@ The goal is to keep environment-specific configuration outside the application i
 
 ---
 
-# 10. REST API
+# 11. REST API
 
 The primary API endpoint is:
 
@@ -853,7 +853,7 @@ Example response:
 
 ---
 
-# 11. Actuator and Application Health
+# 12. Actuator and Application Health
 
 Spring Boot Actuator is enabled.
 
@@ -880,7 +880,7 @@ Kubernetes
 
 ---
 
-# 12. Maven Build
+# 13. Maven Build
 
 The project uses Maven.
 
@@ -912,11 +912,11 @@ Tests should normally be executed before producing the deployment artifact.
 
 ---
 
-# 13. Testing Strategy
+# 14. Testing Strategy
 
 The project separates tests into two categories.
 
-## 13.1 Controller / Slice Test
+## 14.1 Controller / Slice Test
 
 File:
 
@@ -952,7 +952,7 @@ This test is fast and focuses on HTTP/controller behavior.
 
 ---
 
-# 14. Integration Test
+# 15. Integration Test
 
 File:
 
@@ -996,7 +996,7 @@ static void configureDatabase(DynamicPropertyRegistry registry) {
 
 ---
 
-# 15. Why Testcontainers?
+# 16. Why Testcontainers?
 
 The application already has PostgreSQL installed locally.
 
@@ -1026,7 +1026,7 @@ Instead, the test creates its own temporary PostgreSQL environment.
 
 ---
 
-# 16. Testcontainers Lifecycle
+# 17. Testcontainers Lifecycle
 
 When the integration test starts:
 
@@ -1063,7 +1063,7 @@ and successfully created both the Ryuk and PostgreSQL containers.
 
 ---
 
-# 17. Current Test Result
+# 18. Current Test Result
 
 The integration test successfully:
 
@@ -1091,7 +1091,7 @@ This confirms that the current integration-test architecture is working.
 
 ---
 
-# 18. CI Testing Strategy
+# 19. CI Testing Strategy
 
 GitHub Actions does not need a separately configured PostgreSQL service.
 
@@ -1126,7 +1126,7 @@ This makes the test environment self-contained.
 
 ---
 
-# 19. GitHub Actions CI
+# 20. GitHub Actions CI
 
 The CI pipeline performs:
 
@@ -1229,7 +1229,7 @@ jobs:
 
 ---
 
-# 20. Why PostgreSQL Is Not Defined as a CI Service
+# 21. Why PostgreSQL Is Not Defined as a CI Service
 
 We intentionally do not use:
 
@@ -1268,7 +1268,7 @@ Advantages:
 
 ---
 
-# 21. Docker
+# 22. Docker
 
 The application is packaged as a Docker image.
 
@@ -1310,7 +1310,7 @@ ap-south-1
 
 ---
 
-# 22. Amazon ECR
+# 23. Amazon ECR
 
 The CI workflow authenticates to ECR using:
 
@@ -1334,7 +1334,7 @@ The image is then pushed to ECR.
 
 ---
 
-# 23. GitHub Actions AWS Authentication
+# 24. GitHub Actions AWS Authentication
 
 The workflow uses GitHub Actions OIDC:
 
@@ -1376,7 +1376,7 @@ For a production implementation, a dedicated CI/CD IAM role with least-privilege
 
 ---
 
-# 24. CI Failure Previously Encountered
+# 25. CI Failure Previously Encountered
 
 The first integration test execution failed because the Spring Boot application attempted to connect to the default local PostgreSQL configuration:
 
@@ -1394,7 +1394,7 @@ This solved the architectural problem by making the integration test responsible
 
 ---
 
-# 25. Docker / Testcontainers Issue Previously Encountered
+# 26. Docker / Testcontainers Issue Previously Encountered
 
 During local Testcontainers setup, Docker Desktop was running but Testcontainers initially could not establish a valid Docker environment.
 
@@ -1414,7 +1414,7 @@ After this was resolved, PostgreSQL and Ryuk were successfully started by Testco
 
 ---
 
-# 26. Development Environment
+# 27. Development Environment
 
 The local development environment is:
 
@@ -1453,7 +1453,7 @@ PostgreSQL container
 
 ---
 
-# 27. Running the Application Locally
+# 28. Running the Application Locally
 
 Start PostgreSQL locally.
 
@@ -1478,7 +1478,7 @@ curl http://localhost:8080/api/products
 
 ---
 
-# 28. Running Tests Locally
+# 29. Running Tests Locally
 
 Run all tests:
 
@@ -1492,7 +1492,7 @@ No manual PostgreSQL container needs to be created for the integration test.
 
 ---
 
-# 29. Test Separation
+# 30. Test Separation
 
 The project currently has:
 
@@ -1542,7 +1542,7 @@ Testcontainers PostgreSQL
 
 ---
 
-# 30. Production Database Architecture
+# 31. Production Database Architecture
 
 The production environment should not use Testcontainers.
 
@@ -1579,7 +1579,7 @@ Spring Boot
 
 ---
 
-# 31. Target Kubernetes Architecture
+# 32. Target Kubernetes Architecture
 
 The next deployment stage is Amazon EKS.
 
@@ -1617,7 +1617,7 @@ Kubernetes should manage:
 
 ---
 
-# 32. Observability Roadmap
+# 33. Observability Roadmap
 
 The application already exposes Spring Boot Actuator endpoints.
 
@@ -1663,7 +1663,7 @@ Application Logs
 
 ---
 
-# 33. Future CI/CD Pipeline
+# 34. Future CI/CD Pipeline
 
 The current pipeline builds and pushes the application image.
 
@@ -1710,7 +1710,7 @@ GitHub Actions
 
 ---
 
-# 34. Platform Engineering Learning Objectives
+# 35. Platform Engineering Learning Objectives
 
 This project is designed to provide hands-on practice with:
 
@@ -1786,7 +1786,7 @@ This project is designed to provide hands-on practice with:
 
 ---
 
-# 35. Current Project Status
+# 36. Current Project Status
 
 | Component                | Status     |
 | ------------------------ | ---------- |
@@ -1810,7 +1810,7 @@ This project is designed to provide hands-on practice with:
 
 ---
 
-# 36. Recommended Next Steps
+# 37. Recommended Next Steps
 
 The project should now progress in this order:
 
@@ -1850,7 +1850,7 @@ The project should now progress in this order:
 
 ---
 
-# 37. Key Design Principle
+# 38. Key Design Principle
 
 The most important architectural principle in this project is:
 
