@@ -18,6 +18,22 @@ jobs:
     build:
         runs-on: ubuntu-latest
 
+        services:
+            postgres:
+                image: postgres:18
+                env:
+                    POSTGRES_DB: productdb
+                    POSTGRES_USER: postgres
+                    POSTGRES_PASSWORD: postgres
+                ports:
+                    - 5432:5432
+                options: >-
+                    --health-cmd="pg_isready -U postgres -d productdb"
+                    --health-interval=10s
+                    --health-timeout=5s
+                    --health-retries=5
+
+
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -51,7 +67,11 @@ jobs:
                 mvn -version
             
             - name: Run tests
-              run: mvn clean test --batch-mode
+              env:
+                SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/productdb
+                SPRING_DATASOURCE_USERNAME: postgres
+                SPRING_DATASOURCE_PASSWORD: postgres
+              run: mvn clean verify --batch-mode
 
             - name: Upload test reports
               if: failure()
@@ -61,7 +81,7 @@ jobs:
                 path: '**/target/surefire-reports/'
 
             - name: Build the application
-              run: mvn clean package -DskipTests
+              run: mvn clean package -DskipTests --batch-mode
 
             # - name: Build docker image
             #   run: |
