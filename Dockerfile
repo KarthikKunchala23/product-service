@@ -1,7 +1,8 @@
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:21-jre-alpine
 
-RUN groupadd --system spring && \
-    useradd --system --gid spring spring
+RUN apk upgrade --no-cache
+
+RUN addgroup -S spring && adduser -S spring -G spring
 
 WORKDIR /app
 
